@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <header>
+        <h1>Sistema Empresarial</h1>
+        <div id="user-info">
+            <span id="username-display">Usuário</span>
+        </div>
+    </header>
+
+    <main>
+        <div class="login-container">
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" name="email" value="joao@email.com" required>
+                </div>
+                
+                <div id="user-info-container" class="hidden">
+                    <div class="user-details">
+                        <p>Bem-vindo, <span id="user-name"></span>!</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Senha:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                </div>
+                
+                <button type="submit" id="login-button">Continuar</button>
+            </form>
+            
+            <div id="message" class="hidden"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Empresa XYZ Ltda. - Av. Principal, 1234, Centro, São Paulo/SP - CEP: 01234-567</p>
+    </footer>
+
+    <script>
+        // Dados de usuários (em um sistema real, isso viria de um banco de dados)
+        const users = {
+            "joao@email.com": { name: "João Silva", password: "123456" },
+            "maria.souza@email.com": { name: "Maria Souza", password: "abcdef" },
+            "carlos.oliveira@email.com": { name: "Carlos Oliveira", password: "senha123" }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('login-form');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const userInfoContainer = document.getElementById('user-info-container');
+            const userNameSpan = document.getElementById('user-name');
+            const loginButton = document.getElementById('login-button');
+            const messageDiv = document.getElementById('message');
+            
+            let currentEmail = '';
+            
+            // Verificar se o e-mail é válido e conhecido
+            emailInput.addEventListener('blur', function() {
+                const email = emailInput.value.trim();
+                alert("aqui")                
+                if (email && isValidEmail(email)) {
+                    if (users[email]) {
+                        currentEmail = email;
+                        userNameSpan.textContent = users[email].name;
+                        userInfoContainer.classList.remove('hidden');
+                       // passwordInput.focus();
+                        messageDiv.classList.add('hidden');
+                    } else {
+                        showMessage('E-mail não cadastrado no sistema.', 'error');
+                    }
+                } else if (email) {
+                    showMessage('Por favor, insira um e-mail válido.', 'error');
+                }
+            });
+            
+            // Processar o formulário de login
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                
+                if (!email || !isValidEmail(email)) {
+                    showMessage('Por favor, insira um e-mail válido.', 'error');
+                    return;
+                }
+                
+                if (!users[email]) {
+                    showMessage('E-mail não cadastrado no sistema.', 'error');
+                    return;
+                }
+                
+                if (!password) {
+                    showMessage('Por favor, insira sua senha.', 'error');
+                    return;
+                }
+                
+                if (users[email].password === password) {
+                    showMessage('Login realizado com sucesso! Redirecionando...', 'success');
+                    
+                    // Simular redirecionamento após login bem-sucedido
+                    setTimeout(function() {
+                        window.location.href = 'menuPrincipal.html';
+                    }, 1500);
+                } else {
+                    showMessage('Senha incorreta. Tente novamente.', 'error');
+                }
+            });
+            
+            // Função para validar e-mail
+            function isValidEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            // Função para exibir mensagens
+            function showMessage(text, type) {
+                messageDiv.textContent = text;
+                messageDiv.className = type;
+                messageDiv.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
